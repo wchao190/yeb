@@ -1,0 +1,19 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/yeb
+    username: root
+    password: 123456
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: false
+  type-aliases-package: com.xxx.server.pojo
+
+logging:
+  level:
+    com.xxx.server.mapper: debug
