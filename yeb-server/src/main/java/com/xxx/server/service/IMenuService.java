@@ -3,6 +3,8 @@ package com.xxx.server.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xxx.server.pojo.Menu;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -12,5 +14,11 @@ import com.xxx.server.pojo.Menu;
  * @since 2022-01-14
  */
 public interface IMenuService extends IService<Menu> {
+
+    /**
+     * 根据用户id 查询菜单列表
+     * @return
+     */
+    List<Menu> getMenusByAdminId();
 
 }

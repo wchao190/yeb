@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxxx.mapper.MenuMapper">
+<mapper namespace="com.xxx.server.mapper.MenuMapper">
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.xxx.server.pojo.Menu">
@@ -20,5 +20,45 @@
     <sql id="Base_Column_List">
         id, url, path, component, name, iconCls, keepAlive, requireAuth, parentId, enabled
     </sql>
+
+    <resultMap id="menus" type="com.xxx.server.pojo.Menu" extends="BaseResultMap">
+        <collection property="children" ofType="com.xxx.server.pojo.Menu">
+            <id column="subId" property="id" />
+            <result column="subUrl" property="url" />
+            <result column="subPath" property="path" />
+            <result column="subComponent" property="component" />
+            <result column="subName" property="name" />
+            <result column="subIconCls" property="iconCls" />
+            <result column="subKeepAlive" property="keepAlive" />
+            <result column="subRequireAuth" property="requireAuth" />
+            <result column="subParentId" property="parentId" />
+            <result column="subEnabled" property="enabled" />
+        </collection>
+    </resultMap>
+    <!--根据用户id查询菜单-->
+    <select id="getMenusByAdminId" resultMap="menus">
+        SELECT DISTINCT
+            t1.*,
+            t2.id AS subId,
+            t2.url AS subUrl,
+            t2.path AS subPath,
+            t2.component AS subComponent,
+            t2.name AS subName,
+            t2.iconCls AS subIconCls,
+            t2.keepAlive AS subKeepAlive,
+            t2.requireAuth AS subRequireAuth,
+            t2.parentId AS subParentId,
+            t2.enabled AS subEnabled
+        FROM
+            t_menu t1,
+            t_menu t2,
+            t_menu_role mr,
+            t_admin_role ar
+        WHERE t1.id = t2.parentId
+        AND t2.`id` = mr.mid
+        AND mr.`rid` = ar.`rid`
+        AND t2.`enabled`= 1
+        AND ar.adminId = 1
+    </select>
 
 </mapper>
