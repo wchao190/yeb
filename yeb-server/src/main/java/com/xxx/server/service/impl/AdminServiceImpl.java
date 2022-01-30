@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xxx.server.config.security.JwtTokenUtil;
 import com.xxx.server.mapper.AdminMapper;
+import com.xxx.server.mapper.RoleMapper;
 import com.xxx.server.pojo.Admin;
 import com.xxx.server.pojo.Menu;
 import com.xxx.server.pojo.ResultOV;
+import com.xxx.server.pojo.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +39,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
     @Autowired
     private AdminMapper adminMapper;
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -90,5 +94,15 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     @Override
     public Admin getAdminByUserName(String name) {
         return adminMapper.selectOne(new QueryWrapper<Admin>().eq("username",name).eq("enabled",true));
+    }
+
+    /**
+     * 根据用户id获取角色列表
+     * @param id
+     * @return
+     */
+    @Override
+    public List<Role> getRoles(Integer id) {
+        return roleMapper.getRoles(id);
     }
 }

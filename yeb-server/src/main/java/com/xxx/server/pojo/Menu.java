@@ -81,4 +81,10 @@ public class Menu implements Serializable {
      */
     @TableField(exist = false)
     private List<Menu> children;
+
+    /**
+     * 菜单对应的角色列表
+     */
+    @TableField(exist = false)
+    private List<Role> roles;
 }

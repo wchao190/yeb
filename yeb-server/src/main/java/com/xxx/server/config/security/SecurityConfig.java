@@ -5,13 +5,17 @@ import com.xxx.server.service.impl.EmployeeEcServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -26,6 +30,12 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
     @Autowired
     private RestAccessDeniedHandler restAccessDeniedHandler;
 
+    @Autowired
+    private CustomeFilter customeFilter;
+
+    @Autowired
+    private CustomUrlDecisionManager customUrlDecisionManager;
+
     /**
      * 重写登陆认证逻辑
      * @return
@@ -37,9 +47,10 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
             //根据用户名查用户信息
             Admin admin = adminService.getAdminByUserName(username);
             if(admin != null){
+                admin.setRole(adminService.getRoles(admin.getId()));
                 return  admin;
             }
-            return null;
+            throw new UsernameNotFoundException("用户名或密码不正确!");
         };
     }
 
@@ -63,9 +74,18 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
-                .antMatchers("/login","logout","/captcha")
-                .permitAll()
-                .anyRequest().authenticated();
+//                .antMatchers("/login","logout","/captcha")
+//                .permitAll()
+                .anyRequest().authenticated()
+                //动态权限配置
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>(){
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+                        object.setAccessDecisionManager(customUrlDecisionManager);
+                        object.setSecurityMetadataSource(customeFilter);
+                        return object;
+                    }
+                });
         //禁用缓存
         http.headers().cacheControl();
         // 把自己注册的过滤器放在 UsernamePasswordAuthenticationFilter 之前
@@ -74,6 +94,15 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
         http.exceptionHandling()
                 .accessDeniedHandler(restAccessDeniedHandler)
                 .authenticationEntryPoint(restAuthenticationEntryPoint);
+    }
+
+    @Override
+    public void configure(WebSecurity webSecurity) throws Exception{
+        webSecurity.ignoring().antMatchers(
+                "/login",
+                "/logout",
+                "/captcha"
+        );
     }
     /**
      * 创建密码器

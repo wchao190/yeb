@@ -21,6 +21,7 @@
         id, url, path, component, name, iconCls, keepAlive, requireAuth, parentId, enabled
     </sql>
 
+    <!--根据用户id查询菜单-->
     <resultMap id="menus" type="com.xxx.server.pojo.Menu" extends="BaseResultMap">
         <collection property="children" ofType="com.xxx.server.pojo.Menu">
             <id column="subId" property="id" />
@@ -35,7 +36,6 @@
             <result column="subEnabled" property="enabled" />
         </collection>
     </resultMap>
-    <!--根据用户id查询菜单-->
     <select id="getMenusByAdminId" resultMap="menus">
         SELECT DISTINCT
             t1.*,
@@ -58,7 +58,32 @@
         AND t2.`id` = mr.mid
         AND mr.`rid` = ar.`rid`
         AND t2.`enabled`= 1
-        AND ar.adminId = 1
+        AND ar.adminId = #{id}
+    </select>
+
+    <!--根据角色获取菜单权限-->
+    <resultMap id="MenusWithRole" type="com.xxx.server.pojo.Menu" extends="BaseResultMap">
+        <collection property="roles" ofType="com.xxx.server.pojo.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnameZh" property="nameZh"/>
+        </collection>
+    </resultMap>
+    <select id="getMenusWithRole" resultMap="MenusWithRole">
+        SELECT
+            m.*,
+            r.id AS rid,
+            r.name AS rname,
+            r.nameZh AS rnameZh
+        FROM
+            t_menu m,
+            t_menu_role mr,
+            t_role r
+        WHERE
+            m.id = mr.mid
+            AND
+            r.id = mr.rid
+        ORDER BY m.id
     </select>
 
 </mapper>

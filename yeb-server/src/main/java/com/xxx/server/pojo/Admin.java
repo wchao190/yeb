@@ -1,17 +1,21 @@
 package com.xxx.server.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -80,9 +84,17 @@ public class Admin implements Serializable, UserDetails {
      */
     private String remark;
 
+    /**
+     * 角色
+     * @return
+     */
+    @TableField(exist = false)
+    private List<Role> role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return role.stream().map(role1 -> new SimpleGrantedAuthority(role1.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override

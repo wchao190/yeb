@@ -3,10 +3,7 @@ package com.xxx.server.service.impl;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xxx.server.mapper.EmployeeEcMapper;
-import com.xxx.server.pojo.Admin;
-import com.xxx.server.pojo.EmployeeEc;
-import com.xxx.server.pojo.Menu;
-import com.xxx.server.pojo.ResultOV;
+import com.xxx.server.pojo.*;
 import com.xxx.server.service.IEmployeeEcService;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +45,12 @@ public class EmployeeEcServiceImpl extends ServiceImpl<EmployeeEcMapper, Employe
          * @return
          */
         Admin getAdminByUserName(String name);
+
+        /**
+         * 根据用户id获取用户角色
+         * @param id
+         * @return
+         */
+        List<Role> getRoles(Integer id);
     }
 }
