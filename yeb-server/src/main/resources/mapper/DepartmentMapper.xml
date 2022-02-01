@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxxx.mapper.DepartmentMapper">
+<mapper namespace="com.xxx.server.mapper.DepartmentMapper">
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.xxx.server.pojo.Department">
@@ -16,5 +16,29 @@
     <sql id="Base_Column_List">
         id, name, parentId, depPath, enabled, isParent
     </sql>
+
+    <!--查询所有部门-->
+    <select id="getDepartments" resultMap="Department">
+        select
+            <include refid="Base_Column_List"/>
+        from t_department
+        where parentId = #{parentId}
+    </select>
+    <resultMap id="Department" type="com.xxx.server.pojo.Department" extends="BaseResultMap">
+        <collection column="id" property="children" select="com.xxx.server.mapper.DepartmentMapper.getDepartments"
+                    ofType="com.xxx.server.pojo.Department">
+        </collection>
+    </resultMap>
+
+    <!--添加部门-->
+    <insert id="addDepartment" statementType="CALLABLE">
+        call addDep(#{name,mode=IN,jdbcType=VARCHAR},#{parentId,mode=IN,jdbcType=INTEGER},#{enabled,mode=IN,jdbcType=BOOLEAN},
+        #{result,mode=OUT,jdbcType=INTEGER},#{id,mode=OUT,jdbcType=INTEGER})
+    </insert>
+
+    <!--删除部门-->
+    <select id="deleteDepartment" statementType="CALLABLE">
+        call deleteDep(#{id,mode=IN,jdbcType=INTEGER},#{result,mode=OUT,jdbcType=INTEGER})
+    </select>
 
 </mapper>

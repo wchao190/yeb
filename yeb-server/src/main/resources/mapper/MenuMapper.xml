@@ -85,5 +85,35 @@
             r.id = mr.rid
         ORDER BY m.id
     </select>
+    <!--查询所有菜单，包括子菜单-->
+    <select id="getMenus" resultMap="MenuWithChildren">
+        SELECT
+            t1.id AS id1,
+            t1.`name` AS name1,
+            t2.id AS id2,
+            t2.name AS name2,
+            t3.id AS id3,
+            t3.name AS name3
+        FROM
+        t_menu t1,
+        t_menu t2,
+        t_menu t3
+        WHERE t1.id = t2.`parentId`
+        AND t2.id = t3.`parentId`
+        AND t3.`enabled` = TRUE
+    </select>
+
+    <resultMap id="MenuWithChildren" type="com.xxx.server.pojo.Menu" extends="BaseResultMap">
+        <id column="id1" property="id"/>
+        <result column="name1" property="name"/>
+        <collection property="children" ofType="com.xxx.server.pojo.Menu">
+            <id column="id2" property="id"/>
+            <result column="name2" property="name"/>
+            <collection property="children" ofType="com.xxx.server.pojo.Menu">
+                <id column="id3" property="id"/>
+                <result column="name3" property="name"/>
+            </collection>
+        </collection>
+    </resultMap>
 
 </mapper>

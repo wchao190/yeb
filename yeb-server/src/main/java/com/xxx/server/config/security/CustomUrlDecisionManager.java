@@ -32,6 +32,7 @@ public class CustomUrlDecisionManager implements AccessDecisionManager {
                     return;
                 }
             }
+            //获取当前登录用户的权限
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             for (GrantedAuthority authority:authorities) {
                 if(authority.getAuthority().equals(needRole)){

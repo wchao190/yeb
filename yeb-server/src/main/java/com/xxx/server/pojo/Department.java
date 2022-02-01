@@ -1,12 +1,14 @@
 package com.xxx.server.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -54,5 +56,15 @@ public class Department implements Serializable {
      */
     private Boolean isParent;
 
+    /**
+     * 子部门
+     */
+    @TableField(exist = false)
+    private List<Department> children;
 
+    /**
+     * 接收存储过程返回的结果
+     */
+    @TableField(exist = false)
+    private  Integer result;
 }
