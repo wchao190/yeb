@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxxx.mapper.AdminMapper">
+<mapper namespace="com.xxx.server.mapper.AdminMapper">
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.xxx.server.pojo.Admin">
@@ -20,5 +20,28 @@
     <sql id="Base_Column_List">
         id, name, phone, telephone, address, enabled, username, password, userFace, remark
     </sql>
-
+    <!--查询所有操作员-->
+    <select id="getAdmins" resultMap="AdminWithRole">
+        select
+            a.*,
+            ar.id AS rid,
+            r.name AS rname,
+            r.nameZh AS rnameZh
+        from
+            t_admin a
+            left join t_admin_role ar on a.id = ar.adminId
+            left join t_role r on ar.rid = r.id
+        where
+         a.id != #{id}
+         <if test="keywords != null and keywords != ''">
+             and a.name like concat('%',#{keywords},'%')
+         </if>
+    </select>
+    <resultMap id="AdminWithRole" type="com.xxx.server.pojo.Admin" extends="BaseResultMap">
+        <collection property="role" ofType="com.xxx.server.pojo.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnameZh" property="nameZh"/>
+        </collection>
+    </resultMap>
 </mapper>

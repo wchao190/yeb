@@ -52,5 +52,12 @@ public class EmployeeEcServiceImpl extends ServiceImpl<EmployeeEcMapper, Employe
          * @return
          */
         List<Role> getRoles(Integer id);
+
+        /**
+         * 获取所有操作员
+         * @param keywords
+         * @return
+         */
+        List<Admin> getAdmins(String keywords);
     }
 }

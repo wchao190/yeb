@@ -16,5 +16,12 @@ import java.util.List;
  * @since 2022-01-14
  */
 public interface AdminMapper extends BaseMapper<Admin> {
-
+    /**
+     * 获取所有操作员
+     *
+     * @param id
+     * @param keywords
+     * @return
+     */
+    List<Admin> getAdmins(Integer id, String keywords);
 }
