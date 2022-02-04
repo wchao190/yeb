@@ -23,7 +23,7 @@ public class MenuRoleServiceImpl extends ServiceImpl<MenuRoleMapper, MenuRole> i
     @Autowired
     private MenuRoleMapper menuRoleMapper;
     /**
-     * 更新角色对应的菜单
+     * 更新角色对应的菜单，先删除原来的菜单，再更新
      * @param rid
      * @param mids
      * @return

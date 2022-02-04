@@ -6,11 +6,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xxx.server.config.security.AdminUtils;
 import com.xxx.server.config.security.JwtTokenUtil;
 import com.xxx.server.mapper.AdminMapper;
+import com.xxx.server.mapper.AdminRoleMapper;
 import com.xxx.server.mapper.RoleMapper;
-import com.xxx.server.pojo.Admin;
-import com.xxx.server.pojo.Menu;
-import com.xxx.server.pojo.ResultOV;
-import com.xxx.server.pojo.Role;
+import com.xxx.server.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -42,6 +41,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     private AdminMapper adminMapper;
     @Autowired
     private RoleMapper roleMapper;
+    @Autowired
+    private AdminRoleMapper adminRoleMapper;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -115,5 +116,21 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     @Override
     public List<Admin> getAdmins(String keywords) {
         return adminMapper.getAdmins(AdminUtils.getCurrentAdmin().getId(), keywords);
+    }
+
+    /**
+     * 更新操作员角色，先删除原来的角色，然后再更新角色
+     * @param adminId
+     * @param rids
+     * @return
+     */
+    @Transactional
+    public ResultOV updateAdminRole(Integer adminId, Integer[] rids) {
+        adminRoleMapper.delete(new QueryWrapper<AdminRole>().eq("adminId",adminId));
+        Integer result = adminRoleMapper.updateAdminRole(adminId, rids);
+        if(result == rids.length){
+            return ResultOV.success("更新成功!");
+        }
+        return ResultOV.success("更新失败!");
     }
 }

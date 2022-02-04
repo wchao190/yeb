@@ -3,8 +3,10 @@ package com.xxx.server.controller;
 
 import com.xxx.server.pojo.Admin;
 import com.xxx.server.pojo.ResultOV;
+import com.xxx.server.pojo.Role;
 import com.xxx.server.service.INationService;
 import com.xxx.server.service.impl.AdminServiceImpl;
+import com.xxx.server.service.impl.RoleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,9 @@ import java.util.List;
 public class AdminController {
     @Autowired
     private AdminServiceImpl adminService;
+
+    @Autowired
+    private RoleServiceImpl roleService;
 
     /**
      * 获取所有操作员
@@ -54,5 +59,21 @@ public class AdminController {
             return ResultOV.success("删除成功!");
         }
         return ResultOV.error("删除失败!");
+    }
+
+    /**
+     * 获取所有角色
+     * @return
+     */
+    @GetMapping("/roles")
+    public  List<Role> getRoles(){
+        return roleService.list();
+    }
+    /**
+     * 更新操作员角色
+     */
+    @PutMapping("/role")
+    public ResultOV updateAdminRole(Integer adminId,Integer[] rids){
+        return adminService.updateAdminRole(adminId,rids);
     }
 }
