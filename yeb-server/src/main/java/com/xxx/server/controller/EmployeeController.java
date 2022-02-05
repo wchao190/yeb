@@ -33,6 +33,8 @@ public class EmployeeController {
     private PositionServiceImpl positionService;
     @Autowired
     private DepartmentServiceImpl departmentService;
+    @Autowired
+    private EmployeeServiceImpl employeeService;
     @GetMapping("/")
     public RespPageBean getEmployees(@RequestParam(defaultValue = "1")Integer currentPage,
                                      @RequestParam(defaultValue = "20")Integer size,
@@ -89,5 +91,25 @@ public class EmployeeController {
     @PostMapping("/")
     public ResultOV addEmployee(@RequestBody Employee employee){
         return employeeEcService.addEmployee(employee);
+    }
+    /**
+     * 更新员工
+     */
+    @PutMapping("/")
+    public ResultOV updateEmployee(@RequestBody Employee employee){
+        if(employeeService.updateById(employee)){
+            return ResultOV.success("更新成功!");
+        }
+        return ResultOV.success("更新失败!");
+    }
+    /**
+     * 删除员工
+     */
+    @DeleteMapping("/{id}")
+    public ResultOV deleteEmployee(@PathVariable("id") Integer id){
+        if(employeeService.removeById(id)){
+            return ResultOV.success("删除成功!");
+        }
+        return ResultOV.success("删除失败!");
     }
 }
