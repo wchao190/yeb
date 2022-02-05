@@ -1,10 +1,12 @@
 package com.xxx.server.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -43,6 +45,7 @@ public class Employee implements Serializable {
     /**
      * 出生日期
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
     /**
@@ -123,6 +126,7 @@ public class Employee implements Serializable {
     /**
      * 入职日期
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate beginDate;
 
     /**
@@ -143,21 +147,25 @@ public class Employee implements Serializable {
     /**
      * 转正日期
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate conversionTime;
 
     /**
      * 离职日期
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate notWorkDate;
 
     /**
      * 合同起始日期
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate beginContract;
 
     /**
      * 合同终止日期
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endContract;
 
     /**
@@ -169,6 +177,31 @@ public class Employee implements Serializable {
      * 工资账套ID
      */
     private Integer salaryId;
+    /**
+     * 名族
+     */
+    @TableField(exist=false)
+    private Nation nation;
+    /**
+     * 政治面貌
+     */
+    @TableField(exist = false)
+    private  PoliticsStatus politicsStatus;
+    /**
+     * 部门
+     */
+    @TableField(exist = false)
+    private  Department department;
 
+    /**
+     * 职称
+     */
+    @TableField(exist = false)
+    private  Joblevel joblevel;
 
+    /**
+     * 职位
+     */
+    @TableField(exist = false)
+    private  Position position;
 }
