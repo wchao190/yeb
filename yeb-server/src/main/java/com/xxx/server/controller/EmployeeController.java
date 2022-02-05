@@ -2,7 +2,9 @@ package com.xxx.server.controller;
 
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.hutool.http.server.HttpServerResponse;
 import com.xxx.server.pojo.*;
@@ -11,9 +13,11 @@ import com.xxx.server.service.impl.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -155,5 +159,38 @@ public class EmployeeController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @PostMapping("/import")
+    public ResultOV importEmployee(MultipartFile file){
+        ImportParams importParams = new ImportParams();
+        importParams.setTitleRows(1);
+        //获取所有的民族
+        List<Nation> nationList = nationService.list();
+        //获取所有的政治面貌
+        List<PoliticsStatus> politicsStatusList = politicsStatusService.list();
+        //获取所有部门信息
+        List<Department> departmentList = departmentService.list();
+        //职位
+        List<Joblevel> joblevelList = joblevelService.list();
+        //职称
+        List<Position> positionList = positionService.list();
+        try {
+            List<Employee> list = ExcelImportUtil.importExcel(file.getInputStream(), Employee.class, importParams);
+            for (Employee emp : list) {
+                //设置名族id，根据民族的名字在 list 中找到对应的id，然后找到对应的实体，在获取名族id
+                emp.setNationId(nationList.get(nationList.indexOf(new Nation(emp.getNation().getName()))).getId());
+                emp.setPoliticId(politicsStatusList.get(politicsStatusList.indexOf(new PoliticsStatus(emp.getPoliticsStatus().getName()))).getId());
+                emp.setDepartmentId(departmentList.get(departmentList.indexOf(new Department(emp.getDepartment().getName()))).getId());
+                emp.setJobLevelId(joblevelList.get(joblevelList.indexOf(new Joblevel(emp.getJoblevel().getName()))).getId());
+                emp.setPosId(positionList.get(positionList.indexOf(new Position(emp.getPosition().getName()))).getId());
+            }
+            if(employeeService.saveBatch(list)){
+                return ResultOV.success("导入成功!");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResultOV.error("导入失败!");
     }
 }

@@ -5,8 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,7 +19,9 @@ import java.util.List;
  * @since 2022-01-14
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
+@RequiredArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = false,of = "name")
 @TableName("t_department")
 public class Department implements Serializable {
 
@@ -36,6 +37,7 @@ public class Department implements Serializable {
      * 部门名称
      */
     @Excel(name="部门")
+    @NonNull
     private String name;
 
     /**

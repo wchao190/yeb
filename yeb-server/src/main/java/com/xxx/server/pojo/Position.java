@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.sun.istack.internal.NotNull;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -21,7 +21,9 @@ import java.time.LocalDateTime;
  * @since 2022-01-14
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = false,of = "name")
 @TableName("t_position")
 public class Position implements Serializable {
 
@@ -37,6 +39,7 @@ public class Position implements Serializable {
      * 职位
      */
     @Excel(name="职位")
+    @NonNull
     private String name;
 
     /**

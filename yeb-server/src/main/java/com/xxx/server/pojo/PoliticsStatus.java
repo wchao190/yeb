@@ -4,8 +4,7 @@ import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -18,7 +17,9 @@ import java.io.Serializable;
  * @since 2022-01-14
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = false,of = "name")
 @TableName("t_politics_status")
 public class PoliticsStatus implements Serializable {
 
@@ -34,6 +35,7 @@ public class PoliticsStatus implements Serializable {
      * 政治面貌
      */
     @Excel(name="政治面貌")
+    @NonNull
     private String name;
 
 

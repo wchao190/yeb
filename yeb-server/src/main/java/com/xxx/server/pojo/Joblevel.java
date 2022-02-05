@@ -4,8 +4,7 @@ import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -19,7 +18,9 @@ import java.time.LocalDateTime;
  * @since 2022-01-14
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = false,of = "name")
 @TableName("t_joblevel")
 public class Joblevel implements Serializable {
 
@@ -35,6 +36,7 @@ public class Joblevel implements Serializable {
      * 职称名称
      */
     @Excel(name="职称")
+    @NonNull
     private String name;
 
     /**
