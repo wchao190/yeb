@@ -1,12 +1,22 @@
 package com.xxx.server.controller;
 
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
+import cn.hutool.http.server.HttpServerResponse;
 import com.xxx.server.pojo.*;
 import com.xxx.server.service.IEmployeeEcService;
 import com.xxx.server.service.impl.*;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -35,6 +45,15 @@ public class EmployeeController {
     private DepartmentServiceImpl departmentService;
     @Autowired
     private EmployeeServiceImpl employeeService;
+
+    /**
+     * 获取所有员工
+     * @param currentPage
+     * @param size
+     * @param employee
+     * @param beginDateScope
+     * @return
+     */
     @GetMapping("/")
     public RespPageBean getEmployees(@RequestParam(defaultValue = "1")Integer currentPage,
                                      @RequestParam(defaultValue = "20")Integer size,
@@ -111,5 +130,30 @@ public class EmployeeController {
             return ResultOV.success("删除成功!");
         }
         return ResultOV.success("删除失败!");
+    }
+    /**
+     * 下载员工
+     */
+    @GetMapping(value = "/export",produces = "application/vnd.ms-excel")
+    public void exportEmployee(HttpServletResponse response) {
+        //获取要下载的数据
+        List<Employee> list = employeeEcService.getEmployee(null);
+        //导出的参数
+        ExportParams params = new ExportParams("员工表","员工信息", ExcelType.XSSF);
+        //导出工作簿
+        Workbook workbook = ExcelExportUtil.exportExcel(params, Employee.class, list);
+        ServletOutputStream outputStream = null;
+        try {
+            //导出的文件类型
+            response.setContentType("application/vnd.ms-excel");
+            //response.setHeader("Content-Type","application/octet-stream");
+            //防止乱码
+            response.setHeader("Content-Disposition",
+                    "attachment;filename="+ URLEncoder.encode("员工信息.xls","UTF-8"));
+            outputStream = response.getOutputStream();
+            workbook.write(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

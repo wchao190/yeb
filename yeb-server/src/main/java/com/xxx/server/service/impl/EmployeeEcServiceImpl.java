@@ -84,6 +84,15 @@ public class EmployeeEcServiceImpl extends ServiceImpl<EmployeeEcMapper, Employe
     }
 
     /**
+     * 下载查询的员工
+     * @return
+     */
+    @Override
+    public List<Employee> getEmployee(Integer id) {
+        return employeeMapper.getEmployee(id);
+    }
+
+    /**
      * <p>
      *  服务类
      * </p>

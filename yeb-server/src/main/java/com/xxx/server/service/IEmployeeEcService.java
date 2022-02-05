@@ -7,6 +7,7 @@ import com.xxx.server.pojo.RespPageBean;
 import com.xxx.server.pojo.ResultOV;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -39,4 +40,9 @@ public interface IEmployeeEcService extends IService<EmployeeEc> {
      * @return
      */
     ResultOV addEmployee(Employee employee);
+
+    /**
+     * 下载查出的员工
+     */
+    List<Employee> getEmployee(Integer id);
 }
