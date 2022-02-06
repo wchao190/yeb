@@ -6,10 +6,10 @@ spring:
     protocol: smtp
     default-encoding: UTF-8
     password: VMZKZETRYNQZDVEA
-    username:
+    username: wchao190@126.com
     port: 25
   rabbitmq:
     username: admin
     password: 123456
-    host:
+    host: 101.132.137.4
     port: 5672

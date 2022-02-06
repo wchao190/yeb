@@ -1,6 +1,7 @@
 package com.xxx.mail;
 
 import com.xxx.server.pojo.Employee;
+import com.xxx.server.pojo.MailConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -27,7 +28,7 @@ public class MailReceiver {
     @Autowired
     private TemplateEngine templateEngine;
 
-    @RabbitListener(queues = "mail.welcome")
+    @RabbitListener(queues = MailConstants.MAIL_QUEUE_NAME)
     public void handler(Employee employee){
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
