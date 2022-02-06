@@ -13,6 +13,7 @@
     <modules>
         <module>yeb-server</module>
         <module>yeb-generator</module>
+        <module>yeb-mail</module>
     </modules>
 
     <groupId>com.xxx</groupId>

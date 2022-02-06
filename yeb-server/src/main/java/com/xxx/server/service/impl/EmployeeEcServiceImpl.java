@@ -9,6 +9,7 @@ import com.xxx.server.mapper.EmployeeEcMapper;
 import com.xxx.server.mapper.EmployeeMapper;
 import com.xxx.server.pojo.*;
 import com.xxx.server.service.IEmployeeEcService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,8 @@ public class EmployeeEcServiceImpl extends ServiceImpl<EmployeeEcMapper, Employe
 
     @Autowired
     private EmployeeMapper employeeMapper;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     /**
      * 获取所有员工
      * @param currentPage
@@ -78,6 +81,8 @@ public class EmployeeEcServiceImpl extends ServiceImpl<EmployeeEcMapper, Employe
         //保留2位小数
         employee.setContractTerm(Double.parseDouble(format.format(days / 365)));
         if(employeeMapper.insert(employee) == 1){
+            Employee emp = employeeMapper.getEmployee(employee.getId()).get(0);
+            rabbitTemplate.convertAndSend("mail.welcome",emp);
             return ResultOV.success("添加成功!");
         }
         return ResultOV.error("添加失败!");

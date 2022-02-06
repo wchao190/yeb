@@ -1,0 +1,15 @@
+server:
+  port: 8082
+spring:
+  mail:
+    host: smtp.126.com
+    protocol: smtp
+    default-encoding: UTF-8
+    password: VMZKZETRYNQZDVEA
+    username:
+    port: 25
+  rabbitmq:
+    username: admin
+    password: 123456
+    host:
+    port: 5672
