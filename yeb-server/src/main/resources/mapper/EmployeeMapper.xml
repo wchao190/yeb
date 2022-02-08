@@ -147,5 +147,49 @@
                 and e.id = #{id}
             </if>
     </select>
+    <!--获取员工工资账套-->
+    <select id="getEmployeeWithSalary" resultMap="EmployeeWithSalary">
+        select
+            e.*,
+            d.`name` AS dname,
+            s.id AS sid,
+            s.`name` AS sname,
+            s.basicSalary AS sbasicSalary,
+            s.trafficSalary AS strafficSalary,
+            s.lunchSalary AS slunchSalary,
+            s.bonus AS sbonus,
+            s.allSalary AS sallSalary,
+            s.pensionPer AS spensionPer,
+            s.pensionBase AS spensionBase,
+            s.medicalPer AS smedicalPer,
+            s.medicalBase AS smedicalBase,
+            s.accumulationFundPer AS saccumulationFundPer,
+            s.accumulationFundBase AS saccumulationFundBase
+        from
+            t_employee e
+        left join t_salary s on e.salaryId = s.id
+        left join t_department d on e.departmentId = d.id
+        order by e.id
+    </select>
+    <resultMap id="EmployeeWithSalary" type="com.xxx.server.pojo.Employee" extends="BaseResultMap">
+        <association property="salary" javaType="com.xxx.server.pojo.Salary">
+            <id column="sid" property="id"/>
+            <result column="sbasicSalary" property="basicSalary"/>
+            <result column="sbonus" property="bonus"/>
+            <result column="slunchSalary" property="lunchSalary"/>
+            <result column="strafficSalary" property="trafficSalary"/>
+            <result column="sallSalary" property="allSalary"/>
+            <result column="spensionBase" property="pensionBase"/>
+            <result column="spensionPer" property="pensionPer"/>
+            <result column="smedicalBase" property="medicalBase"/>
+            <result column="smedicalPer" property="medicalPer"/>
+            <result column="saccumulationFundBase" property="accumulationFundBase"/>
+            <result column="saccumulationFundPer" property="accumulationFundPer"/>
+            <result column="sname" property="name"/>
+        </association>
+        <association property="department" javaType="com.xxx.server.pojo.Department">
+            <result column="dname" property="name"/>
+        </association>
+    </resultMap>
 
 </mapper>

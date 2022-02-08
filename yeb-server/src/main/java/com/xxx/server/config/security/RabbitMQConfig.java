@@ -69,7 +69,6 @@ public class RabbitMQConfig {
                 logger.info("{}===>消息发送queue时失败",returned.getMessage().getBody());
             }
         });
-
         return template;
     }
 }

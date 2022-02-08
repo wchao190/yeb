@@ -15,6 +15,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.handler.annotation.Headers;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -23,6 +25,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 
 
 @Component
@@ -38,9 +41,15 @@ public class MailReceiver {
     private RedisTemplate redisTemplate;
 
     @RabbitListener(queues = MailConstants.MAIL_QUEUE_NAME)
-    public void handler(Message msg, Channel channel){
+    public void handler(Message msg, Channel channel, @Payload Employee em, @Headers Map<String,Object> hd){
+
+        logger.info("payload===>{}",em);
+        logger.info("header1===>{}",hd);
+
         Employee employee = (Employee)msg.getPayload();
         MessageHeaders headers = msg.getHeaders();
+        logger.info("data===>{}",employee);
+        logger.info("header2==>{}",headers);
         //消息序号
         long tag = (long)headers.get(AmqpHeaders.DELIVERY_TAG);
 

@@ -120,6 +120,20 @@ public class EmployeeEcServiceImpl extends ServiceImpl<EmployeeEcMapper, Employe
     }
 
     /**
+     * 获取员工工资账套
+     * @param currentPage
+     * @param size
+     * @return
+     */
+    @Override
+    public RespPageBean getEmployeeWithSalary(Integer currentPage, Integer size) {
+        Page<Employee>  page = new Page<>(currentPage, size);
+        IPage<Employee> employeePage = employeeMapper.getEmployeeWithSalary(page);
+        RespPageBean respPageBean = new RespPageBean(employeePage.getTotal(), employeePage.getRecords());
+        return respPageBean;
+    }
+
+    /**
      * <p>
      *  服务类
      * </p>

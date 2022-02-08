@@ -45,4 +45,12 @@ public interface IEmployeeEcService extends IService<EmployeeEc> {
      * 下载查出的员工
      */
     List<Employee> getEmployee(Integer id);
+
+    /**
+     * 获取员工工资账套
+     * @param currentPage
+     * @param size
+     * @return
+     */
+    RespPageBean getEmployeeWithSalary(Integer currentPage, Integer size);
 }
