@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,5 +133,26 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             return ResultOV.success("更新成功!");
         }
         return ResultOV.success("更新失败!");
+    }
+
+    /**
+     * 更新用户密码
+     * @param oldPass
+     * @param pass
+     * @param adminId
+     * @return
+     */
+    public ResultOV updateAdminPassword(String oldPass, String pass, Integer adminId) {
+        Admin admin = adminMapper.selectById(adminId);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        //旧密码正确，则更新
+        if(encoder.matches(oldPass,admin.getPassword())){
+            admin.setPassword(encoder.encode(pass));
+            int i = adminMapper.updateById(admin);
+            if (i  == 1){
+                return ResultOV.success("更新成功!");
+            }
+        }
+        return ResultOV.error("更新失败!");
     }
 }

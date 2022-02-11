@@ -4,8 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.xxx.server.config.security.CustomeAuthorityDeserializer;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -62,6 +66,7 @@ public class Admin implements Serializable, UserDetails {
     /**
      * 是否启用
      */
+    @Getter(AccessLevel.NONE)
     private Boolean enabled;
 
     /**
@@ -92,6 +97,7 @@ public class Admin implements Serializable, UserDetails {
     private List<Role> role;
 
     @Override
+    @JsonDeserialize(using = CustomeAuthorityDeserializer.class)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.stream().map(role1 -> new SimpleGrantedAuthority(role1.getName()))
                 .collect(Collectors.toList());
